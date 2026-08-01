@@ -1,0 +1,12 @@
+# Dependencias y builds
+node_modules/
+fyf-studio/node_modules/
+fyf-studio/dist/
+fyf-studio/.sanity/
+
+# Artefactos de sesión / sistema
+.claude/
+.remember/
+.DS_Store
+Thumbs.db
+*.log
