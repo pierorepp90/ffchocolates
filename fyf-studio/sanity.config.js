@@ -9,7 +9,7 @@ export default defineConfig({
   name: 'default',
   title: 'F&F Chocolates',
 
-  projectId: 'REEMPLAZAR_PROJECT_ID',
+  projectId: '6xwkvttc',
   dataset: 'production',
 
   plugins: [structureTool(), visionTool()],

@@ -9,7 +9,7 @@ const IG_USER  = 'ffchocolates';
 
 /* Sanity: completar projectId cuando el Studio esté creado.
    Mientras esté vacío, el sitio usa los datos demo de abajo. */
-const SANITY = { projectId: '', dataset: 'production', apiVersion: '2024-10-01' };
+const SANITY = { projectId: '6xwkvttc', dataset: 'production', apiVersion: '2024-10-01' };
 
 /* ============== HELPERS ============== */
 function waLink(message) {
