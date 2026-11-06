@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /fyf-studio/
+
+Sitemap: https://ffchocolates.com/sitemap.xml
