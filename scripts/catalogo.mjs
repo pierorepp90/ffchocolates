@@ -137,12 +137,13 @@ function productsLD(products, pageUrl) {
 function replaceBetween(html, name, content) {
   const re = new RegExp(`(<!-- ${name}:inicio -->)[\\s\\S]*?(<!-- ${name}:fin -->)`);
   if (!re.test(html)) throw new Error(`Falta el marcador «${name}»`);
-  return html.replace(re, `$1${content}$2`);
+  // Función de reemplazo: un "$&" o "$1" en el contenido de Sanity no se interpreta como patrón
+  return html.replace(re, (_, inicio, fin) => inicio + content + fin);
 }
 
 function touchSitemap(xml, loc, date) {
   const re = new RegExp(`(<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</loc>\\s*<lastmod>)[^<]*(</lastmod>)`);
-  return xml.replace(re, `$1${date}$2`);
+  return xml.replace(re, (_, inicio, fin) => inicio + date + fin);
 }
 
 async function main() {
