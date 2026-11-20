@@ -60,6 +60,19 @@ Luego **pegar el `projectId`** en tres lugares:
    disponibilidad (Disponible / Por encargo / Sin stock), oferta opcional.
 3. Guardar (*Publish*). El sitio muestra el cambio al recargar.
 
+## Catálogo estático (SEO)
+
+`scripts/catalogo.mjs` copia los productos de Sanity al HTML de la portada,
+`/cajas-de-bombones/` y `/souvenirs-de-chocolate/` (tarjetas + JSON-LD con precio),
+para que buscadores y bots de IA vean productos y precios sin ejecutar JavaScript.
+Cada grilla elige sus categorías con `data-categorias="A|B"`.
+
+Lo corre `.github/workflows/catalogo.yml` a las 8 y a las 20 (hora argentina) y en cada
+push que toque esas páginas. Para forzarlo después de editar en Sanity: GitHub → Actions →
+**Catálogo estático** → *Run workflow*. Local: `node scripts/catalogo.mjs`.
+
+Plan de SEO local y pendientes: `docs/crecimiento/plan-trafico-organico.md`.
+
 ## Datos de la marca
 
 - WhatsApp: **221 501 7485** → `wa.me/5492215017485`

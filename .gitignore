@@ -10,3 +10,4 @@ fyf-studio/.sanity/
 .DS_Store
 Thumbs.db
 *.log
+.playwright-mcp/

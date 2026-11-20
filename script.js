@@ -96,10 +96,15 @@ async function loadProducts() {
         }));
       }
     } catch (err) {
-      console.warn('No se pudo leer Sanity, uso datos demo:', err);
+      console.warn('No se pudo leer Sanity:', err);
     }
   }
+  // Si el HTML ya trae el catálogo estático (scripts/catalogo.mjs), se queda ese.
+  if (hasStaticCatalog()) return null;
   return DEMO_PRODUCTS;
+}
+function hasStaticCatalog() {
+  return !!document.querySelector('#productGrid .card');
 }
 
 /* ============== PRECIO & MEDIA ============== */
@@ -170,6 +175,8 @@ function order(p) {
 
 /* ============== TARJETA ============== */
 const grid = document.getElementById('productGrid');
+/* Páginas temáticas: la grilla declara sus categorías (data-categorias="A|B"). */
+const FIXED_CATS = grid && grid.dataset.categorias ? grid.dataset.categorias.split('|') : null;
 
 function tplProduct(p) {
   const card = document.createElement('article');
@@ -244,7 +251,7 @@ function renderSkeleton(n = 6) {
 const catFilters = document.getElementById('catFilters');
 
 function renderFilters() {
-  if (!catFilters) return;
+  if (!catFilters || FIXED_CATS) return;
   const cats = ['Todos', ...new Set(allProducts.map((p) => p.category))];
   if (cats.length <= 2) { catFilters.innerHTML = ''; return; } // 'Todos' + 1 categoría: no hace falta
   catFilters.innerHTML = cats.map((c) =>
@@ -381,8 +388,10 @@ if (new URLSearchParams(location.search).get('enviado') === '1') {
 /* ============== INIT ============== */
 if (grid) {
   (async function init() {
-    renderSkeleton();
-    allProducts = await loadProducts();
+    if (!hasStaticCatalog()) renderSkeleton();
+    const products = await loadProducts();
+    if (!products) return; // queda el catálogo estático del HTML
+    allProducts = FIXED_CATS ? products.filter((p) => FIXED_CATS.includes(p.category)) : products;
     renderFilters();
     renderProducts();
   })();
