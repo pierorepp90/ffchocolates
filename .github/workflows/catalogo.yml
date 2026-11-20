@@ -1,0 +1,43 @@
+# Copia el catálogo de Sanity al HTML (productos y precios visibles para
+# buscadores y bots de IA) y republica el sitio si algo cambió.
+name: Catálogo estático
+
+on:
+  schedule:
+    - cron: '0 11,23 * * *'   # 8:00 y 20:00 de Argentina
+  workflow_dispatch:           # botón "Run workflow" en GitHub → Actions
+  repository_dispatch:
+    types: [sanity-publish]    # para un webhook de Sanity (opcional)
+  push:
+    branches: [main]
+    paths: ['index.html', 'cajas-de-bombones/**', 'souvenirs-de-chocolate/**', 'scripts/catalogo.mjs']
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: catalogo
+  cancel-in-progress: false
+
+jobs:
+  catalogo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generar catálogo desde Sanity
+        run: node scripts/catalogo.mjs
+      - name: Publicar si cambió
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then echo "Sin cambios en el catálogo"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Actualizar catálogo estático desde Sanity"
+          git push
+          # Un push hecho con GITHUB_TOKEN no dispara Pages: se pide el build a mano
+          gh api -X POST "repos/${{ github.repository }}/pages/builds"
